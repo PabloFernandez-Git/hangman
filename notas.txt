@@ -1,0 +1,10 @@
+twitch (plataforma)
+
+pop-up
+.split('')
+.join('')
+e.key
+.includes()
+.push()
+.indexOf()
+

@@ -1,0 +1,20 @@
+.game {
+    position: relative;
+    margin: auto;
+    width: 95vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+  
+.hangman__container {
+    fill: transparent;
+    stroke: #fff;
+    stroke-width: 4px;
+    stroke-linecap: round;
+}
+  
+.hangman__part {
+    display: none;
+}
+
+
