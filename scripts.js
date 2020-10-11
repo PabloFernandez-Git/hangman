@@ -7,13 +7,14 @@ const popUpButton = document.getElementById('pop-up-button');
 
 const words = ['ordenador', 'javascript'];
 const letters = [
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' ];
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' 
+];
 
 const correctLetters = [];
-const MaxAttempts = 6;
+const maxAttempts = 6;
 let attempts = 0;
 
-const selectedWord = words[Math.floor(Math.random()*words.length)].toUpperCase();
+const selectedWord = words[Math.floor(Math.random() * words.length)].toUpperCase();
 
 //console.log(selectedWord);
 
@@ -24,6 +25,7 @@ const writeWord = () => {
         </span>
     `
     ).join('');
+
     wordElement.innerHTML = wordToWrite;
 };
 
@@ -42,10 +44,10 @@ const writeKeyboard = () => {
 const updateWrongAttempts = () => {
     //console.log(hangmanParts)
     hangmanParts[attempts].classList.remove('hangman__part');
-    if(attempts<MaxAttempts) {
+    if(attempts < maxAttempts) {
         attempts += 1;
     }
-}
+};
 
 const checkLetter = (letter) => {
     if(selectedWord.includes(letter)) {
@@ -53,16 +55,26 @@ const checkLetter = (letter) => {
         if(!correctLetters.includes(letter)) {
             correctLetters.push(letter);
             writeWord();
-            console.log(correctLetters)
+            //console.log(correctLetters)
         }
     } else {
-        updateWrongAttempts()        
+        updateWrongAttempts();     
     }
+};
+
+markUsedLetters = letter => {
+    
 }
 
 window.addEventListener('keyup', e => {
     checkLetter(e.key);
 })
+
+keyboard.addEventListener('click', e => {
+    if(e.target.classList.contains('keyboard__key')) {
+        checkLetter(e.target.textContent);
+    }
+});
 
 writeWord();
 writeKeyboard();

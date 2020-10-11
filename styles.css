@@ -34,3 +34,20 @@
     height: 50px;
 }
 
+.keyboard {
+    display: grid;
+    grid-template-columns: repeat(13, 1fr);
+    gap: 15px;
+    justify-items: center;
+}
+  
+.keyboard__key {
+    background-color: #427773;
+    padding: 1rem;
+    cursor: pointer;
+}
+
+.keyboard__key--used {
+    background-color: #233f3c;
+}
+

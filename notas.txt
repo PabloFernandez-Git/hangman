@@ -1,5 +1,7 @@
 twitch (plataforma)
 
+.floor
+Math.random()
 pop-up
 .split('')
 .join('')
