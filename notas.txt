@@ -1,18 +1,21 @@
-twitch (plataforma)
 
 .floor
 Math.random()
-pop-up
 .split('')
 .join('')
 e.key
 .includes()
 .push()
 .indexOf()
+.toUpperCase()
 
-Array y strings comparten metodos porque los string son array de letras.
+span.setAttribute('data-letter', letter);
+span.classList.add('keyboard__key');
+span.textContent = letter;
 
 hangmanParts[attempts].classList.remove('hangman__part');
 
-.toUpperCase()
+Array y strings comparten metodos porque los string son array de letras.
+
+
 

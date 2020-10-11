@@ -33,6 +33,7 @@ const writeKeyboard = () => {
     const fragment = document.createDocumentFragment();
     letters.map(letter => {
         const span = document.createElement('SPAN');
+        span.setAttribute('data-letter', letter);
         span.classList.add('keyboard__key');
         span.textContent = letter;
         fragment.appendChild(span);
@@ -62,17 +63,19 @@ const checkLetter = (letter) => {
     }
 };
 
-markUsedLetters = letter => {
-    
+const markUsedLetters = letter => {
+    document.querySelector(`[data-letter = ${letter.toUpperCase()}]`).classList.add('keyboard__key--used');
 }
 
 window.addEventListener('keyup', e => {
-    checkLetter(e.key);
-})
+    checkLetter(e.key.toUpperCase());
+    markUsedLetters(e.key);
+});
 
 keyboard.addEventListener('click', e => {
     if(e.target.classList.contains('keyboard__key')) {
         checkLetter(e.target.textContent);
+        markUsedLetters(e.target.textContent);
     }
 });
 
