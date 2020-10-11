@@ -19,7 +19,21 @@ const getRandomWord = () => words[Math.floor(Math.random() * words.length)].toUp
 
 let selectedWord = getRandomWord();
 
+const showPopUp = (win) => {
+    popUp.classList.add('pop-up--show');
+    popUpText.textContent = win ? 'HAS GANADO' : 'HAS PERDIDO';
+    popUpButton.textContent = 'Volver a jugar';
+};
 
+const resetGame = () => {
+    correctLetters = [];
+    selectedWord = getRandomWord();
+    writeWord();
+    removeUsedLetters();
+    popUp.classList.remove('pop-up--show');
+    popUpText.textContent = '';
+    popUpButton.textContent = '';
+};
 
 const writeWord = () => {
     const wordToWrite = selectedWord.split('').map(letter => `
@@ -36,9 +50,7 @@ const writeWord = () => {
 
 
     if (wordIngame === selectedWord) {
-        popUp.classList.add('pop-up--show');
-        popUpText.textContent = 'Ganaste';
-        popUpButton.textContent = 'Volver a jugar';
+        showPopUp(true);
     }
 };
 
@@ -60,9 +72,7 @@ const updateWrongAttempts = () => {
     if(attempts < maxAttempts) {
         attempts += 1;
     } else {
-        popUp.classList.add('pop-up--show');
-        popUpText.textContent = 'Game over';
-        popUpButton.textContent = 'Volver a jugar';
+        showPopUp(false);
         attempts = 0;
     }
 };
@@ -102,13 +112,8 @@ keyboard.addEventListener('click', e => {
 });
 
 popUpButton.addEventListener('click', () => {
-    correctLetters = [];
-    selectedWord = getRandomWord();
-    writeWord();
-    removeUsedLetters();
-    popUp.classList.remove('pop-up--show');
-    popUpText.textContent = '';
-    popUpButton.textContent = '';
+    hangmanParts.forEach(part => part.classList.add('hangman__part'));
+    resetGame();
 });
 
 writeWord();
