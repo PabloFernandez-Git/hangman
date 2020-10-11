@@ -8,6 +8,10 @@ e.key
 .push()
 .indexOf()
 .toUpperCase()
+.trim()
+.innerText
+.replace
+
 
 span.setAttribute('data-letter', letter);
 span.classList.add('keyboard__key');

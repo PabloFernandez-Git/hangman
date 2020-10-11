@@ -10,13 +10,16 @@ const letters = [
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' 
 ];
 
-const correctLetters = [];
-const maxAttempts = 6;
+let correctLetters = [];
+const maxAttempts = 5;
 let attempts = 0;
 
-const selectedWord = words[Math.floor(Math.random() * words.length)].toUpperCase();
 
-//console.log(selectedWord);
+const getRandomWord = () => words[Math.floor(Math.random() * words.length)].toUpperCase();
+
+let selectedWord = getRandomWord();
+
+
 
 const writeWord = () => {
     const wordToWrite = selectedWord.split('').map(letter => `
@@ -27,6 +30,16 @@ const writeWord = () => {
     ).join('');
 
     wordElement.innerHTML = wordToWrite;
+
+    // const wordIngame = wordElement.innerText.replace(/\n/g, '');
+    const wordIngame = wordElement.textContent.replace(/\s+/g, '').trim();
+
+
+    if (wordIngame === selectedWord) {
+        popUp.classList.add('pop-up--show');
+        popUpText.textContent = 'Ganaste';
+        popUpButton.textContent = 'Volver a jugar';
+    }
 };
 
 const writeKeyboard = () => {
@@ -43,10 +56,14 @@ const writeKeyboard = () => {
 }
 
 const updateWrongAttempts = () => {
-    //console.log(hangmanParts)
     hangmanParts[attempts].classList.remove('hangman__part');
     if(attempts < maxAttempts) {
         attempts += 1;
+    } else {
+        popUp.classList.add('pop-up--show');
+        popUpText.textContent = 'Game over';
+        popUpButton.textContent = 'Volver a jugar';
+        attempts = 0;
     }
 };
 
@@ -56,7 +73,6 @@ const checkLetter = (letter) => {
         if(!correctLetters.includes(letter)) {
             correctLetters.push(letter);
             writeWord();
-            //console.log(correctLetters)
         }
     } else {
         updateWrongAttempts();     
@@ -66,6 +82,12 @@ const checkLetter = (letter) => {
 const markUsedLetters = letter => {
     document.querySelector(`[data-letter = ${letter.toUpperCase()}]`).classList.add('keyboard__key--used');
 }
+
+const removeUsedLetters = () => {
+    const allkeys = [...document.querySelectorAll(`.keyboard__key`)]; 
+
+    allkeys.forEach(key => key.classList.remove('keyboard__key--used'));
+};
 
 window.addEventListener('keyup', e => {
     checkLetter(e.key.toUpperCase());
@@ -79,8 +101,15 @@ keyboard.addEventListener('click', e => {
     }
 });
 
+popUpButton.addEventListener('click', () => {
+    correctLetters = [];
+    selectedWord = getRandomWord();
+    writeWord();
+    removeUsedLetters();
+    popUp.classList.remove('pop-up--show');
+    popUpText.textContent = '';
+    popUpButton.textContent = '';
+});
+
 writeWord();
 writeKeyboard();
-
-
-

@@ -51,3 +51,37 @@
     background-color: #233f3c;
 }
 
+.pop-up {
+    position: fixed;
+    top: 25%;
+    left: 50%;
+    transform: translateX(-50%) scale(0);
+    width: 500px;
+    height: 300px;
+    border: 2px solid #fff;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+    transition: transform 0.4s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 50px;
+    color: #fff;
+}
+  
+.pop-up__text {
+    margin: 0;
+    margin-bottom: 2rem;
+}
+  
+.pop-up__button {
+    padding: 1rem;
+    width: 300px;
+    font-size: 20px;
+}
+  
+.pop-up--show {
+    transform: translateX(-50%) scale(1);
+}
+
