@@ -11,6 +11,7 @@ e.key
 .trim()
 .innerText
 .replace
+helpWord = helpWord.replaceAll(letter, '');
 
 
 span.setAttribute('data-letter', letter);
@@ -25,4 +26,6 @@ Array y strings comparten metodos porque los string son array de letras.
 
 local storage
 
+helpWord.charAt(Math.round(Math.random() * helpWord.length));
 
+buttonHelp.remove();

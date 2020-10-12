@@ -12,6 +12,7 @@ const scoreWins = document.getElementById('score-wins');
 let buttonHelp = document.getElementById('button-help');
 
 const ls = localStorage;
+let canHelp = true;
 
 const words = ['palito', 'lolena', 'noma'];
 const letters = [
@@ -26,14 +27,14 @@ let totalPoints = 0;
 let gameMemoryCard = {};
 
 const firstRenderPoints = () => {
-    if (localStorage.getItem('totalScore')) {
-        gameMemoryCard = JSON.parse(localStorage.getItem('totalScore'));
+    if (ls.getItem('totalScore')) {
+        gameMemoryCard = JSON.parse(ls.getItem('totalScore'));
         scoreRecord.textContent = `Record: ${gameMemoryCard.record}`;
         scorePoints.textContent = `Score: 0`;
         scoreLosses.textContent = `L: ${gameMemoryCard.losses}`;
         scoreWins.textContent = `W: ${gameMemoryCard.wins}`;
     } else {
-        localStorage.setItem('totalScore', JSON.stringify({wins: 0, losses: 0, points: 0, record: 0}));
+        ls.setItem('totalScore', JSON.stringify({wins: 0, losses: 0, points: 0, record: 0}));
     }
 };
 
@@ -47,7 +48,7 @@ const setRecord = () => {
 
 const updateLocalStorage = (points = 0) => {
     totalPoints += points;
-    if(localStorage.getItem('totalScore')) {
+    if(ls.getItem('totalScore')) {
         const gameStatus = {
             wins: gameMemoryCard.wins,
             losses: gameMemoryCard.losses,
@@ -57,7 +58,7 @@ const updateLocalStorage = (points = 0) => {
  
         gameMemoryCard = gameStatus;
         
-        localStorage.setItem('totalScore', JSON.stringify(gameStatus));
+        ls.setItem('totalScore', JSON.stringify(gameStatus));
         scoreRecord.textContent = `Record: ${gameStatus.record}`;
         scorePoints.textContent = `Score: ${totalPoints}`;
         scoreLosses.textContent = `L: ${gameMemoryCard.losses}`;
@@ -68,6 +69,7 @@ const updateLocalStorage = (points = 0) => {
 const getRandomWord = () => words[Math.floor(Math.random() * words.length)].toUpperCase();
 
 let selectedWord = getRandomWord();
+let helpWord = selectedWord;
 
 const showPopUp = (win) => {
     popUp.classList.add('pop-up--show');
@@ -76,10 +78,11 @@ const showPopUp = (win) => {
     win ? (gameMemoryCard.wins += 1) : (gameMemoryCard.losses += 1);
     updateLocalStorage();
 };
- 
+
 const resetGame = () => {
     correctLetters = [];
     selectedWord = getRandomWord();
+    helpWord = selectedWord;
     writeWord();
     removeUsedLetters();
     popUp.classList.remove('pop-up--show');
@@ -128,13 +131,25 @@ const updateWrongAttempts = () => {
     }
 };
 
+const findHelpLetter = () => {
+    const randomLetter = helpWord.charAt(Math.round(Math.random() * helpWord.length));
+    buttonHelp.remove();
+    checkLetter(randomLetter);
+    canHelp = false;
+};
+
+const updateHelpLetter = letter => {
+    helpWord = helpWord.replaceAll(letter, '');
+};
+
 const checkLetter = (letter) => {
     if(selectedWord.includes(letter)) {
         // Usando "!" podemos validar al contrario
         if(!correctLetters.includes(letter)) {
             correctLetters.push(letter);
             writeWord();
-            updateLocalStorage(10);
+            canHelp ? updateLocalStorage(0) : updateLocalStorage(10);
+            updateHelpLetter(letter);
         }
     } else {
         updateWrongAttempts();
@@ -168,6 +183,8 @@ popUpButton.addEventListener('click', () => {
     hangmanParts.forEach(part => part.classList.add('hangman__part'));
     resetGame();
 });
+
+buttonHelp.addEventListener('click', findHelpLetter);
 
 writeWord();
 writeKeyboard();
