@@ -5,6 +5,17 @@ const popUp = document.getElementById('pop-up');
 const popUpText = document.getElementById('pop-up-text');
 const popUpButton = document.getElementById('pop-up-button');
 
+const scoreText = document.getElementById('score-text');
+const scoreLose = document.getElementById('score-lose');
+const scoreWins = document.getElementById('score-wins');
+
+const ls = localStorage;
+
+const games = {
+    win: 0,
+    losses: 0
+};
+
 const words = ['ordenador', 'javascript'];
 const letters = [
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' 
@@ -13,7 +24,20 @@ const letters = [
 let correctLetters = [];
 const maxAttempts = 5;
 let attempts = 0;
+let totalPoints = 0;
 
+const writeInLocalStorage = (wins = 0, losses = 0) => {
+    if (localStorage.getItem('totalScore')) {
+        const totalScoreLS = JSON.parse(localStorage.getItem('totalScore'));
+        games.wins = totalScoreLS.wins;
+        games.losses = totalScoreLS.losses;
+    } else {
+        localStorage.setItem('totalScore', JSON.stringify(games));
+    }
+};
+
+// todo terminar funcion para local storage
+// writeInLocalStorage();
 
 const getRandomWord = () => words[Math.floor(Math.random() * words.length)].toUpperCase();
 
@@ -23,6 +47,11 @@ const showPopUp = (win) => {
     popUp.classList.add('pop-up--show');
     popUpText.textContent = win ? 'HAS GANADO' : 'HAS PERDIDO';
     popUpButton.textContent = 'Volver a jugar';
+};
+
+const scoreMaster = (points) => {
+    totalPoints += points;
+    scoreText.textContent = `Score: ${totalPoints}`;
 };
 
 const resetGame = () => {
@@ -45,7 +74,6 @@ const writeWord = () => {
 
     wordElement.innerHTML = wordToWrite;
 
-    // const wordIngame = wordElement.innerText.replace(/\n/g, '');
     const wordIngame = wordElement.textContent.replace(/\s+/g, '').trim();
 
 
@@ -83,9 +111,11 @@ const checkLetter = (letter) => {
         if(!correctLetters.includes(letter)) {
             correctLetters.push(letter);
             writeWord();
+            scoreMaster(10);
         }
     } else {
-        updateWrongAttempts();     
+        updateWrongAttempts();
+        scoreMaster(-5);   
     }
 };
 
@@ -118,3 +148,4 @@ popUpButton.addEventListener('click', () => {
 
 writeWord();
 writeKeyboard();
+scoreMaster(0);

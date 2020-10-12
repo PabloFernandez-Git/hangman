@@ -23,3 +23,6 @@ Array y strings comparten metodos porque los string son array de letras.
 
 .forEach vs .map
 
+local storage
+
+
