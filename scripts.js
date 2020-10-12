@@ -1,22 +1,19 @@
+const gameElement = document.getElementById('game');
 const wordElement = document.getElementById('word-element');
 const keyboard = document.getElementById('keyboard');
-const hangmanParts = document.querySelectorAll('.hangman__part')
+const hangmanParts = document.querySelectorAll('.hangman__part');
 const popUp = document.getElementById('pop-up');
 const popUpText = document.getElementById('pop-up-text');
 const popUpButton = document.getElementById('pop-up-button');
-
-const scoreText = document.getElementById('score-text');
-const scoreLose = document.getElementById('score-lose');
+const scoreRecord = document.getElementById('score-record');
+const scorePoints = document.getElementById('score-points');
+const scoreLosses = document.getElementById('score-losses');
 const scoreWins = document.getElementById('score-wins');
+let buttonHelp = document.getElementById('button-help');
 
 const ls = localStorage;
 
-const games = {
-    win: 0,
-    losses: 0
-};
-
-const words = ['ordenador', 'javascript'];
+const words = ['palito', 'lolena', 'noma'];
 const letters = [
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' 
 ];
@@ -26,18 +23,47 @@ const maxAttempts = 5;
 let attempts = 0;
 let totalPoints = 0;
 
-const writeInLocalStorage = (wins = 0, losses = 0) => {
+let gameMemoryCard = {};
+
+const firstRenderPoints = () => {
     if (localStorage.getItem('totalScore')) {
-        const totalScoreLS = JSON.parse(localStorage.getItem('totalScore'));
-        games.wins = totalScoreLS.wins;
-        games.losses = totalScoreLS.losses;
+        gameMemoryCard = JSON.parse(localStorage.getItem('totalScore'));
+        scoreRecord.textContent = `Record: ${gameMemoryCard.record}`;
+        scorePoints.textContent = `Score: 0`;
+        scoreLosses.textContent = `L: ${gameMemoryCard.losses}`;
+        scoreWins.textContent = `W: ${gameMemoryCard.wins}`;
     } else {
-        localStorage.setItem('totalScore', JSON.stringify(games));
+        localStorage.setItem('totalScore', JSON.stringify({wins: 0, losses: 0, points: 0, record: 0}));
     }
 };
 
-// todo terminar funcion para local storage
-// writeInLocalStorage();
+const setRecord = () => {
+    if(totalPoints > gameMemoryCard.record) {
+        return totalPoints;
+    }
+
+    return gameMemoryCard.record
+};
+
+const updateLocalStorage = (points = 0) => {
+    totalPoints += points;
+    if(localStorage.getItem('totalScore')) {
+        const gameStatus = {
+            wins: gameMemoryCard.wins,
+            losses: gameMemoryCard.losses,
+            points: totalPoints,
+            record: setRecord()
+        };
+ 
+        gameMemoryCard = gameStatus;
+        
+        localStorage.setItem('totalScore', JSON.stringify(gameStatus));
+        scoreRecord.textContent = `Record: ${gameStatus.record}`;
+        scorePoints.textContent = `Score: ${totalPoints}`;
+        scoreLosses.textContent = `L: ${gameMemoryCard.losses}`;
+        scoreWins.textContent = `W: ${gameMemoryCard.wins}`;
+    }
+};
 
 const getRandomWord = () => words[Math.floor(Math.random() * words.length)].toUpperCase();
 
@@ -47,13 +73,10 @@ const showPopUp = (win) => {
     popUp.classList.add('pop-up--show');
     popUpText.textContent = win ? 'HAS GANADO' : 'HAS PERDIDO';
     popUpButton.textContent = 'Volver a jugar';
+    win ? (gameMemoryCard.wins += 1) : (gameMemoryCard.losses += 1);
+    updateLocalStorage();
 };
-
-const scoreMaster = (points) => {
-    totalPoints += points;
-    scoreText.textContent = `Score: ${totalPoints}`;
-};
-
+ 
 const resetGame = () => {
     correctLetters = [];
     selectedWord = getRandomWord();
@@ -111,11 +134,11 @@ const checkLetter = (letter) => {
         if(!correctLetters.includes(letter)) {
             correctLetters.push(letter);
             writeWord();
-            scoreMaster(10);
+            updateLocalStorage(10);
         }
     } else {
         updateWrongAttempts();
-        scoreMaster(-5);   
+        updateLocalStorage(-5);   
     }
 };
 
@@ -148,4 +171,4 @@ popUpButton.addEventListener('click', () => {
 
 writeWord();
 writeKeyboard();
-scoreMaster(0);
+firstRenderPoints();
